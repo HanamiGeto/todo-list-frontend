@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -6,11 +8,30 @@ import { Component } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  email:string = '';
-  password:string = '';
+  username: string = '';
+  password: string = '';
 
-  login() {
-    // Logik, um mit backend zu kommunizieren
+  constructor(private as: AuthService, private router: Router) {
+
   }
+
+  async login() {
+    // Logik, um mit backend zu kommunizieren
+   
+    try {
+      let resp:any = await this.as.loginWithUsernameAndPassword(this.username, this.password);
+      console.log(resp);
+      localStorage.setItem('token', resp['token']);
+      // TODO: Redirect
+      this.router.navigateByUrl('/todos');
+    } catch(e) {
+      // Show error message
+      alert('Login fehlgeschlagen!')
+      console.error(e);
+      
+    }
+  }
+
+  
 
 }
